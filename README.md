@@ -10,11 +10,13 @@ Free and easy to use waifu2x application on iOS.
 
 ![screenshot 3](3.png)
 
+![screenshot 4](4.png)
+
 ### Compile
 
 ```bash
 # clone this repo
-git clone https://github.com/BlueCocoa/waifu2x-ios
+git clone --depth=1 https://github.com/BlueCocoa/waifu2x-ios
 cd waifu2x-ios && export SRCROOT=`pwd`
 
 # download and unarchive Vuklan SDK for macOS to ${SRCROOT}/Vulkan_SDK

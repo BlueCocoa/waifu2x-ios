@@ -10,19 +10,22 @@
 #include "gpu.h"
 #include "layer.h"
 
+typedef void (^waifu2xProcessPercentageCallback)(float progress);
+
 class Waifu2x
 {
 public:
-    Waifu2x(int gpuid, bool tta_mode = false);
+    enum Mode {
+        waifu2x = 1,
+        realsr
+    };
+public:
+    Waifu2x(int gpuid, bool tta_mode = false, Mode mode = Mode::waifu2x);
     ~Waifu2x();
 
-#if _WIN32
-    int load(const std::wstring& parampath, const std::wstring& modelpath);
-#else
     int load(const std::string& parampath, const std::string& modelpath);
-#endif
 
-    int process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const;
+    int process(const ncnn::Mat& inimage, ncnn::Mat& outimage, waifu2xProcessPercentageCallback cb) const;
 
 public:
     // waifu2x parameters
@@ -30,12 +33,18 @@ public:
     int scale;
     int tilesize;
     int prepadding;
+    
+    Mode mode;
 
 private:
     ncnn::Net net;
     ncnn::Pipeline* waifu2x_preproc;
     ncnn::Pipeline* waifu2x_postproc;
-    ncnn::Layer* bicubic_2x;
+    
+    // waifu2x -> bicubic_2x
+    // realsr  -> bicubic_4x
+    ncnn::Layer* bicubic_op;
+    float bicubic_scale;
     bool tta_mode;
 };
 

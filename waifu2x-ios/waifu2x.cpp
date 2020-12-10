@@ -5,6 +5,48 @@
 #include <algorithm>
 #include <vector>
 
+#pragma mark - RealSR
+
+static const uint32_t realsr_preproc_spv_data[] = {
+    #include "realsr_preproc.spv.hex.h"
+};
+static const uint32_t realsr_preproc_fp16s_spv_data[] = {
+    #include "realsr_preproc_fp16s.spv.hex.h"
+};
+static const uint32_t realsr_preproc_int8s_spv_data[] = {
+    #include "realsr_preproc_int8s.spv.hex.h"
+};
+static const uint32_t realsr_postproc_spv_data[] = {
+    #include "realsr_postproc.spv.hex.h"
+};
+static const uint32_t realsr_postproc_fp16s_spv_data[] = {
+    #include "realsr_postproc_fp16s.spv.hex.h"
+};
+static const uint32_t realsr_postproc_int8s_spv_data[] = {
+    #include "realsr_postproc_int8s.spv.hex.h"
+};
+
+static const uint32_t realsr_preproc_tta_spv_data[] = {
+    #include "realsr_preproc_tta.spv.hex.h"
+};
+static const uint32_t realsr_preproc_tta_fp16s_spv_data[] = {
+    #include "realsr_preproc_tta_fp16s.spv.hex.h"
+};
+static const uint32_t realsr_preproc_tta_int8s_spv_data[] = {
+    #include "realsr_preproc_tta_int8s.spv.hex.h"
+};
+static const uint32_t realsr_postproc_tta_spv_data[] = {
+    #include "realsr_postproc_tta.spv.hex.h"
+};
+static const uint32_t realsr_postproc_tta_fp16s_spv_data[] = {
+    #include "realsr_postproc_tta_fp16s.spv.hex.h"
+};
+static const uint32_t realsr_postproc_tta_int8s_spv_data[] = {
+    #include "realsr_postproc_tta_int8s.spv.hex.h"
+};
+
+#pragma mark - Waifu2x
+
 static const uint32_t waifu2x_preproc_spv_data[] = {
     #include "waifu2x_preproc.spv.hex.h"
 };
@@ -43,7 +85,7 @@ static const uint32_t waifu2x_postproc_tta_int8s_spv_data[] = {
     #include "waifu2x_postproc_tta_int8s.spv.hex.h"
 };
 
-Waifu2x::Waifu2x(int gpuid, bool _tta_mode)
+Waifu2x::Waifu2x(int gpuid, bool _tta_mode, Waifu2x::Mode _mode)
 {
     net.opt.use_vulkan_compute = true;
     net.opt.use_fp16_packed = true;
@@ -56,8 +98,14 @@ Waifu2x::Waifu2x(int gpuid, bool _tta_mode)
 
     waifu2x_preproc = 0;
     waifu2x_postproc = 0;
-    bicubic_2x = 0;
+    bicubic_op = 0;
     tta_mode = _tta_mode;
+    mode = _mode;
+    if (mode == Waifu2x::Mode::waifu2x) {
+        bicubic_scale = 2.f;
+    } else if (mode == Waifu2x::Mode::realsr) {
+        bicubic_scale = 4.f;
+    }
 }
 
 Waifu2x::~Waifu2x()
@@ -68,52 +116,19 @@ Waifu2x::~Waifu2x()
         delete waifu2x_postproc;
     }
 
-    bicubic_2x->destroy_pipeline(net.opt);
-    delete bicubic_2x;
+    bicubic_op->destroy_pipeline(net.opt);
+    delete bicubic_op;
 }
 
-#if _WIN32
-int Waifu2x::load(const std::wstring& parampath, const std::wstring& modelpath)
-#else
 int Waifu2x::load(const std::string& parampath, const std::string& modelpath)
-#endif
 {
-#if _WIN32
-    {
-        FILE* fp = _wfopen(parampath.c_str(), L"rb");
-        if (!fp)
-        {
-            fwprintf(stderr, L"_wfopen %ls failed\n", parampath.c_str());
-        }
-
-        net.load_param(fp);
-
-        fclose(fp);
-    }
-    {
-        FILE* fp = _wfopen(modelpath.c_str(), L"rb");
-        if (!fp)
-        {
-            fwprintf(stderr, L"_wfopen %ls failed\n", modelpath.c_str());
-        }
-
-        net.load_model(fp);
-
-        fclose(fp);
-    }
-#else
     net.load_param(parampath.c_str());
     net.load_model(modelpath.c_str());
-#endif
 
     // initialize preprocess and postprocess pipeline
     {
         std::vector<ncnn::vk_specialization_type> specializations(1);
-#if _WIN32
-        specializations[0].i = 1;
-#else
         specializations[0].i = 0;
-#endif
 
         waifu2x_preproc = new ncnn::Pipeline(net.vulkan_device());
         waifu2x_preproc->set_optimal_local_size_xyz(32, 32, 3);
@@ -123,61 +138,95 @@ int Waifu2x::load(const std::string& parampath, const std::string& modelpath)
 
         if (tta_mode)
         {
-            if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
-                waifu2x_preproc->create(waifu2x_preproc_tta_int8s_spv_data, sizeof(waifu2x_preproc_tta_int8s_spv_data), specializations);
-            else if (net.opt.use_fp16_storage)
-                waifu2x_preproc->create(waifu2x_preproc_tta_fp16s_spv_data, sizeof(waifu2x_preproc_tta_fp16s_spv_data), specializations);
-            else
-                waifu2x_preproc->create(waifu2x_preproc_tta_spv_data, sizeof(waifu2x_preproc_tta_spv_data), specializations);
+            if (mode == Waifu2x::Mode::waifu2x) {
+                if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
+                    waifu2x_preproc->create(waifu2x_preproc_tta_int8s_spv_data, sizeof(waifu2x_preproc_tta_int8s_spv_data), specializations);
+                else if (net.opt.use_fp16_storage)
+                    waifu2x_preproc->create(waifu2x_preproc_tta_fp16s_spv_data, sizeof(waifu2x_preproc_tta_fp16s_spv_data), specializations);
+                else
+                    waifu2x_preproc->create(waifu2x_preproc_tta_spv_data, sizeof(waifu2x_preproc_tta_spv_data), specializations);
 
-            if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
-                waifu2x_postproc->create(waifu2x_postproc_tta_int8s_spv_data, sizeof(waifu2x_postproc_tta_int8s_spv_data), specializations);
-            else if (net.opt.use_fp16_storage)
-                waifu2x_postproc->create(waifu2x_postproc_tta_fp16s_spv_data, sizeof(waifu2x_postproc_tta_fp16s_spv_data), specializations);
-            else
-                waifu2x_postproc->create(waifu2x_postproc_tta_spv_data, sizeof(waifu2x_postproc_tta_spv_data), specializations);
+                if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
+                    waifu2x_postproc->create(waifu2x_postproc_tta_int8s_spv_data, sizeof(waifu2x_postproc_tta_int8s_spv_data), specializations);
+                else if (net.opt.use_fp16_storage)
+                    waifu2x_postproc->create(waifu2x_postproc_tta_fp16s_spv_data, sizeof(waifu2x_postproc_tta_fp16s_spv_data), specializations);
+                else
+                    waifu2x_postproc->create(waifu2x_postproc_tta_spv_data, sizeof(waifu2x_postproc_tta_spv_data), specializations);
+            } else if (mode == Waifu2x::Mode::realsr) {
+                if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
+                    waifu2x_preproc->create(realsr_preproc_tta_int8s_spv_data, sizeof(realsr_preproc_tta_int8s_spv_data), specializations);
+                else if (net.opt.use_fp16_storage)
+                    waifu2x_preproc->create(realsr_preproc_tta_fp16s_spv_data, sizeof(realsr_preproc_tta_fp16s_spv_data), specializations);
+                else
+                    waifu2x_preproc->create(realsr_preproc_tta_spv_data, sizeof(realsr_preproc_tta_spv_data), specializations);
+
+                if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
+                    waifu2x_postproc->create(realsr_postproc_tta_int8s_spv_data, sizeof(realsr_postproc_tta_int8s_spv_data), specializations);
+                else if (net.opt.use_fp16_storage)
+                    waifu2x_postproc->create(realsr_postproc_tta_fp16s_spv_data, sizeof(realsr_postproc_tta_fp16s_spv_data), specializations);
+                else
+                    waifu2x_postproc->create(realsr_postproc_tta_spv_data, sizeof(realsr_postproc_tta_spv_data), specializations);
+            }
         }
         else
         {
-            if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
-                waifu2x_preproc->create(waifu2x_preproc_int8s_spv_data, sizeof(waifu2x_preproc_int8s_spv_data), specializations);
-            else if (net.opt.use_fp16_storage)
-                waifu2x_preproc->create(waifu2x_preproc_fp16s_spv_data, sizeof(waifu2x_preproc_fp16s_spv_data), specializations);
-            else
-                waifu2x_preproc->create(waifu2x_preproc_spv_data, sizeof(waifu2x_preproc_spv_data), specializations);
+            if (mode == Waifu2x::Mode::waifu2x) {
+                if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
+                    waifu2x_preproc->create(waifu2x_preproc_int8s_spv_data, sizeof(waifu2x_preproc_int8s_spv_data), specializations);
+                else if (net.opt.use_fp16_storage)
+                    waifu2x_preproc->create(waifu2x_preproc_fp16s_spv_data, sizeof(waifu2x_preproc_fp16s_spv_data), specializations);
+                else
+                    waifu2x_preproc->create(waifu2x_preproc_spv_data, sizeof(waifu2x_preproc_spv_data), specializations);
 
-            if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
-                waifu2x_postproc->create(waifu2x_postproc_int8s_spv_data, sizeof(waifu2x_postproc_int8s_spv_data), specializations);
-            else if (net.opt.use_fp16_storage)
-                waifu2x_postproc->create(waifu2x_postproc_fp16s_spv_data, sizeof(waifu2x_postproc_fp16s_spv_data), specializations);
-            else
-                waifu2x_postproc->create(waifu2x_postproc_spv_data, sizeof(waifu2x_postproc_spv_data), specializations);
+                if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
+                    waifu2x_postproc->create(waifu2x_postproc_int8s_spv_data, sizeof(waifu2x_postproc_int8s_spv_data), specializations);
+                else if (net.opt.use_fp16_storage)
+                    waifu2x_postproc->create(waifu2x_postproc_fp16s_spv_data, sizeof(waifu2x_postproc_fp16s_spv_data), specializations);
+                else
+                    waifu2x_postproc->create(waifu2x_postproc_spv_data, sizeof(waifu2x_postproc_spv_data), specializations);
+            } else if (mode == Waifu2x::Mode::realsr) {
+                if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
+                    waifu2x_preproc->create(realsr_preproc_int8s_spv_data, sizeof(realsr_preproc_int8s_spv_data), specializations);
+                else if (net.opt.use_fp16_storage)
+                    waifu2x_preproc->create(realsr_preproc_fp16s_spv_data, sizeof(realsr_preproc_fp16s_spv_data), specializations);
+                else
+                    waifu2x_preproc->create(realsr_preproc_spv_data, sizeof(realsr_preproc_spv_data), specializations);
+
+                if (net.opt.use_fp16_storage && net.opt.use_int8_storage)
+                    waifu2x_postproc->create(realsr_postproc_int8s_spv_data, sizeof(realsr_postproc_int8s_spv_data), specializations);
+                else if (net.opt.use_fp16_storage)
+                    waifu2x_postproc->create(realsr_postproc_fp16s_spv_data, sizeof(realsr_postproc_fp16s_spv_data), specializations);
+                else
+                    waifu2x_postproc->create(realsr_postproc_spv_data, sizeof(realsr_postproc_spv_data), specializations);
+            }
         }
     }
 
-    // bicubic 2x for alpha channel
+    // bicubic for alpha channel
     {
-        bicubic_2x = ncnn::create_layer("Interp");
-        bicubic_2x->vkdev = net.vulkan_device();
+        bicubic_op = ncnn::create_layer("Interp");
+        bicubic_op->vkdev = net.vulkan_device();
 
         ncnn::ParamDict pd;
         pd.set(0, 3);// bicubic
-        pd.set(1, 2.f);
-        pd.set(2, 2.f);
-        bicubic_2x->load_param(pd);
+        pd.set(1, bicubic_scale);
+        pd.set(2, bicubic_scale);
+        bicubic_op->load_param(pd);
 
-        bicubic_2x->create_pipeline(net.opt);
+        bicubic_op->create_pipeline(net.opt);
     }
 
     return 0;
 }
 
-int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
+int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage, waifu2xProcessPercentageCallback cb) const
 {
-    if (noise == -1 && scale == 1)
-    {
-        outimage = inimage;
-        return 0;
+    if (mode == Waifu2x::Mode::waifu2x) {
+        if (noise == -1 && scale == 1)
+        {
+            outimage = inimage;
+            return 0;
+        }
     }
 
     const unsigned char* pixeldata = (const unsigned char*)inimage.data;
@@ -196,7 +245,8 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
     opt.workspace_vkallocator = blob_vkallocator;
     opt.staging_vkallocator = staging_vkallocator;
 
-    // each tile 400x400
+    // waifu2x: each tile 400x400
+    // realsr: each tile 100x100
     const int xtiles = (w + TILE_SIZE_X - 1) / TILE_SIZE_X;
     const int ytiles = (h + TILE_SIZE_Y - 1) / TILE_SIZE_Y;
 
@@ -208,13 +258,15 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
         const int tile_h_nopad = std::min((yi + 1) * TILE_SIZE_Y, h) - yi * TILE_SIZE_Y;
 
         int prepadding_bottom = prepadding;
-        if (scale == 1)
-        {
-            prepadding_bottom += (tile_h_nopad + 3) / 4 * 4 - tile_h_nopad;
-        }
-        if (scale == 2)
-        {
-            prepadding_bottom += (tile_h_nopad + 1) / 2 * 2 - tile_h_nopad;
+        if (mode == Waifu2x::Mode::waifu2x) {
+            if (scale == 1)
+            {
+                prepadding_bottom += (tile_h_nopad + 3) / 4 * 4 - tile_h_nopad;
+            }
+            if (scale == 2)
+            {
+                prepadding_bottom += (tile_h_nopad + 1) / 2 * 2 - tile_h_nopad;
+            }
         }
 
         int in_tile_y0 = std::max(yi * TILE_SIZE_Y - prepadding, 0);
@@ -229,19 +281,11 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
         {
             if (channels == 3)
             {
-#if _WIN32
-                in = ncnn::Mat::from_pixels(pixeldata + in_tile_y0 * w * channels, ncnn::Mat::PIXEL_BGR2RGB, w, (in_tile_y1 - in_tile_y0));
-#else
                 in = ncnn::Mat::from_pixels(pixeldata + in_tile_y0 * w * channels, ncnn::Mat::PIXEL_RGB, w, (in_tile_y1 - in_tile_y0));
-#endif
             }
             if (channels == 4)
             {
-#if _WIN32
-                in = ncnn::Mat::from_pixels(pixeldata + in_tile_y0 * w * channels, ncnn::Mat::PIXEL_BGRA2RGBA, w, (in_tile_y1 - in_tile_y0));
-#else
                 in = ncnn::Mat::from_pixels(pixeldata + in_tile_y0 * w * channels, ncnn::Mat::PIXEL_RGBA, w, (in_tile_y1 - in_tile_y0));
-#endif
             }
         }
 
@@ -277,13 +321,15 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
             const int tile_w_nopad = std::min((xi + 1) * TILE_SIZE_X, w) - xi * TILE_SIZE_X;
 
             int prepadding_right = prepadding;
-            if (scale == 1)
-            {
-                prepadding_right += (tile_w_nopad + 3) / 4 * 4 - tile_w_nopad;
-            }
-            if (scale == 2)
-            {
-                prepadding_right += (tile_w_nopad + 1) / 2 * 2 - tile_w_nopad;
+            if (mode == Waifu2x::Mode::waifu2x) {
+                if (scale == 1)
+                {
+                    prepadding_right += (tile_w_nopad + 3) / 4 * 4 - tile_w_nopad;
+                }
+                if (scale == 2)
+                {
+                    prepadding_right += (tile_w_nopad + 1) / 2 * 2 - tile_w_nopad;
+                }
             }
 
             if (tta_mode)
@@ -357,9 +403,20 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                     ex.set_workspace_vkallocator(blob_vkallocator);
                     ex.set_staging_vkallocator(staging_vkallocator);
 
-                    ex.input("Input1", in_tile_gpu[ti]);
+                    if (mode == Waifu2x::Mode::waifu2x) {
+                        ex.input("Input1", in_tile_gpu[ti]);
 
-                    ex.extract("Eltwise4", out_tile_gpu[ti], cmd);
+                        ex.extract("Eltwise4", out_tile_gpu[ti], cmd);
+                    } else if (mode == Waifu2x::Mode::realsr) {
+                        ex.input("data", in_tile_gpu[ti]);
+
+                        ex.extract("output", out_tile_gpu[ti], cmd);
+                        
+                        {
+                            cmd.submit_and_wait();
+                            cmd.reset();
+                        }
+                    }
                 }
 
                 ncnn::VkMat out_alpha_tile_gpu;
@@ -369,9 +426,17 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                     {
                         out_alpha_tile_gpu = in_alpha_tile_gpu;
                     }
-                    if (scale == 2)
-                    {
-                        bicubic_2x->forward(in_alpha_tile_gpu, out_alpha_tile_gpu, cmd, opt);
+                    
+                    if (mode == Waifu2x::Mode::waifu2x) {
+                        if (scale == 2)
+                        {
+                            bicubic_op->forward(in_alpha_tile_gpu, out_alpha_tile_gpu, cmd, opt);
+                        }
+                    } else if (mode == Waifu2x::Mode::realsr) {
+                        if (scale == 4)
+                        {
+                            bicubic_op->forward(in_alpha_tile_gpu, out_alpha_tile_gpu, cmd, opt);
+                        }
                     }
                 }
 
@@ -389,7 +454,11 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                     bindings[8] = out_alpha_tile_gpu;
                     bindings[9] = out_gpu;
 
-                    std::vector<ncnn::vk_constant_type> constants(11);
+                    size_t num_constants = 11;
+                    if (mode == Waifu2x::Mode::realsr) {
+                        num_constants = 13;
+                    }
+                    std::vector<ncnn::vk_constant_type> constants(num_constants);
                     constants[0].i = out_tile_gpu[0].w;
                     constants[1].i = out_tile_gpu[0].h;
                     constants[2].i = out_tile_gpu[0].cstep;
@@ -398,9 +467,17 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                     constants[5].i = out_gpu.cstep;
                     constants[6].i = xi * TILE_SIZE_X * scale;
                     constants[7].i = std::min(TILE_SIZE_X * scale, out_gpu.w - xi * TILE_SIZE_X * scale);
-                    constants[8].i = channels;
-                    constants[9].i = out_alpha_tile_gpu.w;
-                    constants[10].i = out_alpha_tile_gpu.h;
+                    if (mode == Waifu2x::Mode::waifu2x) {
+                        constants[8].i = channels;
+                        constants[9].i = out_alpha_tile_gpu.w;
+                        constants[10].i = out_alpha_tile_gpu.h;
+                    } else if (mode == Waifu2x::Mode::realsr) {
+                        constants[8].i = prepadding * scale;
+                        constants[9].i = prepadding * scale;
+                        constants[10].i = channels;
+                        constants[11].i = out_alpha_tile_gpu.w;
+                        constants[12].i = out_alpha_tile_gpu.h;
+                    }
 
                     ncnn::VkMat dispatcher;
                     dispatcher.w = std::min(TILE_SIZE_X * scale, out_gpu.w - xi * TILE_SIZE_X * scale);
@@ -466,9 +543,15 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                     ex.set_workspace_vkallocator(blob_vkallocator);
                     ex.set_staging_vkallocator(staging_vkallocator);
 
-                    ex.input("Input1", in_tile_gpu);
+                    if (mode == Waifu2x::Mode::waifu2x) {
+                        ex.input("Input1", in_tile_gpu);
 
-                    ex.extract("Eltwise4", out_tile_gpu, cmd);
+                        ex.extract("Eltwise4", out_tile_gpu, cmd);
+                    } else if (mode == Waifu2x::Mode::realsr) {
+                        ex.input("data", in_tile_gpu);
+
+                        ex.extract("output", out_tile_gpu, cmd);
+                    }
                 }
 
                 ncnn::VkMat out_alpha_tile_gpu;
@@ -478,9 +561,18 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                     {
                         out_alpha_tile_gpu = in_alpha_tile_gpu;
                     }
-                    if (scale == 2)
-                    {
-                        bicubic_2x->forward(in_alpha_tile_gpu, out_alpha_tile_gpu, cmd, opt);
+                    
+                    
+                    if (mode == Waifu2x::Mode::waifu2x) {
+                        if (scale == 2)
+                        {
+                            bicubic_op->forward(in_alpha_tile_gpu, out_alpha_tile_gpu, cmd, opt);
+                        }
+                    } else if (mode == Waifu2x::Mode::realsr) {
+                        if (scale == 4)
+                        {
+                            bicubic_op->forward(in_alpha_tile_gpu, out_alpha_tile_gpu, cmd, opt);
+                        }
                     }
                 }
 
@@ -491,7 +583,11 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                     bindings[1] = out_alpha_tile_gpu;
                     bindings[2] = out_gpu;
 
-                    std::vector<ncnn::vk_constant_type> constants(11);
+                    size_t num_constants = 11;
+                    if (mode == Waifu2x::Mode::realsr) {
+                        num_constants = 13;
+                    }
+                    std::vector<ncnn::vk_constant_type> constants(num_constants);
                     constants[0].i = out_tile_gpu.w;
                     constants[1].i = out_tile_gpu.h;
                     constants[2].i = out_tile_gpu.cstep;
@@ -500,9 +596,17 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                     constants[5].i = out_gpu.cstep;
                     constants[6].i = xi * TILE_SIZE_X * scale;
                     constants[7].i = std::min(TILE_SIZE_X * scale, out_gpu.w - xi * TILE_SIZE_X * scale);
-                    constants[8].i = channels;
-                    constants[9].i = out_alpha_tile_gpu.w;
-                    constants[10].i = out_alpha_tile_gpu.h;
+                    if (mode == Waifu2x::Mode::waifu2x) {
+                        constants[8].i = channels;
+                        constants[9].i = out_alpha_tile_gpu.w;
+                        constants[10].i = out_alpha_tile_gpu.h;
+                    } else if (mode == Waifu2x::Mode::realsr) {
+                        constants[8].i = prepadding * scale;
+                        constants[9].i = prepadding * scale;
+                        constants[10].i = channels;
+                        constants[11].i = out_alpha_tile_gpu.w;
+                        constants[12].i = out_alpha_tile_gpu.h;
+                    }
 
                     ncnn::VkMat dispatcher;
                     dispatcher.w = std::min(TILE_SIZE_X * scale, out_gpu.w - xi * TILE_SIZE_X * scale);
@@ -518,6 +622,10 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
                 cmd.submit_and_wait();
                 cmd.reset();
             }
+            
+            float percentage = (float)(yi * xtiles + xi) / (ytiles * xtiles) * 100;
+            fprintf(stderr, "[INFO] %.2f%%\n", percentage);
+            if (cb) cb(percentage);
         }
 
         // download
@@ -537,19 +645,11 @@ int Waifu2x::process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
             {
                 if (channels == 3)
                 {
-#if _WIN32
-                    out.to_pixels((unsigned char*)outimage.data + yi * scale * TILE_SIZE_Y * w * scale * channels, ncnn::Mat::PIXEL_RGB2BGR);
-#else
                     out.to_pixels((unsigned char*)outimage.data + yi * scale * TILE_SIZE_Y * w * scale * channels, ncnn::Mat::PIXEL_RGB);
-#endif
                 }
                 if (channels == 4)
                 {
-#if _WIN32
-                    out.to_pixels((unsigned char*)outimage.data + yi * scale * TILE_SIZE_Y * w * scale * channels, ncnn::Mat::PIXEL_RGBA2BGRA);
-#else
                     out.to_pixels((unsigned char*)outimage.data + yi * scale * TILE_SIZE_Y * w * scale * channels, ncnn::Mat::PIXEL_RGBA);
-#endif
                 }
             }
         }

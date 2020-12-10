@@ -107,6 +107,7 @@ class ProcThreadParams
 {
 public:
     const Waifu2x* waifu2x;
+    waifu2xProcessPercentageCallback cb;
 };
 
 void* proc(void* args)
@@ -123,7 +124,7 @@ void* proc(void* args)
         if (v.id == -233)
             break;
 
-        waifu2x->process(v.inimage, v.outimage);
+        waifu2x->process(v.inimage, v.outimage, ptp->cb);
 
         tosave.put(v);
     }
@@ -391,12 +392,6 @@ void* save(void* args)
         return;
     }
 
-    if (scale < 1 || scale > 2)
-    {
-        if (cb) cb(1, total, NSLocalizedString(@"[ERROR] supported scale is 1 or 2", @""));
-        return;
-    }
-
     if (tilesize < 32)
     {
         if (cb) cb(1, total, NSLocalizedString(@"[ERROR] tilesize should no less than 32", @""));
@@ -416,6 +411,7 @@ void* save(void* args)
     if (cb) cb(2, total, NSLocalizedString(@"Prepare models...", @""));
     
     int prepadding = 0;
+    Waifu2x::Mode mode;
     if ([model isEqualToString:@"models-cunet"]) {
         if (noise == -1)
         {
@@ -429,10 +425,19 @@ void* save(void* args)
         {
             prepadding = 18;
         }
+        mode = Waifu2x::Mode::waifu2x;
     } else if ([model isEqualToString:@"models-upconv_7_anime_style_art_rgb"]) {
         prepadding = 7;
+        mode = Waifu2x::Mode::waifu2x;
     } else if ([model isEqualToString:@"models-upconv_7_photo"]) {
         prepadding = 7;
+        mode = Waifu2x::Mode::waifu2x;
+    } else if ([model isEqualToString:@"models-DF2K"]) {
+        prepadding = 10;
+        mode = Waifu2x::Mode::realsr;
+    } else if ([model isEqualToString:@"models-DF2K_JPEG"]) {
+        prepadding = 10;
+        mode = Waifu2x::Mode::realsr;
     } else {
         if (cb) cb(3, total, NSLocalizedString(@"[ERROR] No such model", @""));
         return;
@@ -440,20 +445,39 @@ void* save(void* args)
     
     NSString * parampath = nil;
     NSString * modelpath = nil;
-    if (noise == -1)
-    {
-        parampath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/scale2.0x_model.param", model] ofType:nil];
-        modelpath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/scale2.0x_model.bin", model] ofType:nil];
-    }
-    else if (scale == 1)
-    {
-        parampath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/noise%d_model.param", model, noise] ofType:nil];
-        modelpath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/noise%d_model.bin", model, noise] ofType:nil];
-    }
-    else if (scale == 2)
-    {
-        parampath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/noise%d_scale2.0x_model.param", model, noise] ofType:nil];
-        modelpath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/noise%d_scale2.0x_model.bin", model, noise] ofType:nil];
+    if (mode == Waifu2x::Mode::waifu2x) {
+        if (scale < 1 || scale > 2)
+        {
+            if (cb) cb(3, total, NSLocalizedString(@"[ERROR] supported scale is 1 or 2", @""));
+            return;
+        }
+        
+        if (noise == -1)
+        {
+            parampath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/scale2.0x_model.param", model] ofType:nil];
+            modelpath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/scale2.0x_model.bin", model] ofType:nil];
+        }
+        else if (scale == 1)
+        {
+            parampath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/noise%d_model.param", model, noise] ofType:nil];
+            modelpath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/noise%d_model.bin", model, noise] ofType:nil];
+        }
+        else if (scale == 2)
+        {
+            parampath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/noise%d_scale2.0x_model.param", model, noise] ofType:nil];
+            modelpath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/noise%d_scale2.0x_model.bin", model, noise] ofType:nil];
+        }
+    } else if (mode == Waifu2x::Mode::realsr) {
+        if (scale == 4)
+        {
+            parampath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/x4.param", model] ofType:nil];
+            modelpath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"models/%@/x4.bin", model] ofType:nil];
+        }
+        else
+        {
+            if (cb) cb(3, total, NSLocalizedString(@"[ERROR] RealSR supported scale is 4", @""));
+            return;
+        }
     }
     
     if (cb) cb(3, total, NSLocalizedString(@"Creating GPU instance...", @""));
@@ -476,7 +500,7 @@ void* save(void* args)
 
     
     {
-        Waifu2x waifu2x(gpuid, enable_tta_mode);
+        Waifu2x waifu2x(gpuid, enable_tta_mode, mode);
 
         if (cb) cb(4, total, NSLocalizedString(@"Loading models...", @""));
         waifu2x.load([parampath UTF8String], [modelpath UTF8String]);
@@ -515,6 +539,18 @@ void* save(void* args)
             // waifu2x proc
             ProcThreadParams ptp;
             ptp.waifu2x = &waifu2x;
+            NSTimeInterval start_time = [[NSDate date] timeIntervalSince1970];
+            ptp.cb = ^(float percentage) {
+                if (cb) {
+                    NSString * msg = [NSString stringWithFormat:@"Waifu2x processing...%0.2f%%", percentage];
+                    if (percentage > 0) {
+                        NSTimeInterval current = [[NSDate date] timeIntervalSince1970];
+                        double estimated = (current - start_time) / percentage * 100.f;
+                        msg = [msg stringByAppendingFormat:@"\nEsimated left time: %.0lfs", estimated];
+                    }
+                    cb(percentage, 100, msg);
+                }
+            };
 
             std::vector<ncnn::Thread*> proc_threads(jobs_proc);
             for (int i=0; i<jobs_proc; i++)

@@ -54,6 +54,10 @@
 		CC30D2FC2581D3260032B3D9 /* noise3_model.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC30D26F2581B6BF0032B3D9 /* noise3_model.bin */; };
 		CC30D310258247A50032B3D9 /* SVProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC30D304258246700032B3D9 /* SVProgressHUD.framework */; };
 		CC30D314258247BE0032B3D9 /* SVProgressHUD.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC30D304258246700032B3D9 /* SVProgressHUD.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CC7BC57825828765003F33A3 /* x4.param in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC7BC575258285C7003F33A3 /* x4.param */; };
+		CC7BC57925828765003F33A3 /* x4.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC7BC574258285C7003F33A3 /* x4.bin */; };
+		CC7BC57D2582878F003F33A3 /* x4.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC7BC570258285C7003F33A3 /* x4.bin */; };
+		CC7BC57E2582878F003F33A3 /* x4.param in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC7BC56F258285C7003F33A3 /* x4.param */; };
 		CCC0DE1925819414000F4854 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CCC0DE1825819414000F4854 /* AppDelegate.m */; };
 		CCC0DE1F25819414000F4854 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CCC0DE1E25819414000F4854 /* ViewController.mm */; };
 		CCC0DE2225819414000F4854 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CCC0DE2025819414000F4854 /* Main.storyboard */; };
@@ -207,6 +211,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CC7BC57625828752003F33A3 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "models/models-DF2K";
+			dstSubfolderSpec = 7;
+			files = (
+				CC7BC57825828765003F33A3 /* x4.param in CopyFiles */,
+				CC7BC57925828765003F33A3 /* x4.bin in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC7BC57B2582877C003F33A3 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "models/models-DF2K_JPEG";
+			dstSubfolderSpec = 7;
+			files = (
+				CC7BC57D2582878F003F33A3 /* x4.bin in CopyFiles */,
+				CC7BC57E2582878F003F33A3 /* x4.param in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -255,6 +281,14 @@
 		CC30D27C2581BBC60032B3D9 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		CC30D27D2581BBC60032B3D9 /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
 		CC30D2FE258246700032B3D9 /* SVProgressHUD.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SVProgressHUD.xcodeproj; path = SVProgressHUD/SVProgressHUD.xcodeproj; sourceTree = SOURCE_ROOT; };
+		CC7BC56D258285C7003F33A3 /* x4.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = x4.bin; sourceTree = "<group>"; };
+		CC7BC56E258285C7003F33A3 /* x4.param */ = {isa = PBXFileReference; lastKnownFileType = text; path = x4.param; sourceTree = "<group>"; };
+		CC7BC56F258285C7003F33A3 /* x4.param */ = {isa = PBXFileReference; lastKnownFileType = text; name = x4.param; path = "realsr-ncnn-vulkan/models/models-DF2K_JPEG/x4.param"; sourceTree = SOURCE_ROOT; };
+		CC7BC570258285C7003F33A3 /* x4.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = x4.bin; path = "realsr-ncnn-vulkan/models/models-DF2K_JPEG/x4.bin"; sourceTree = SOURCE_ROOT; };
+		CC7BC572258285C7003F33A3 /* x4.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = x4.bin; sourceTree = "<group>"; };
+		CC7BC573258285C7003F33A3 /* x4.param */ = {isa = PBXFileReference; lastKnownFileType = text; path = x4.param; sourceTree = "<group>"; };
+		CC7BC574258285C7003F33A3 /* x4.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = x4.bin; path = "realsr-ncnn-vulkan/models/models-DF2K/x4.bin"; sourceTree = SOURCE_ROOT; };
+		CC7BC575258285C7003F33A3 /* x4.param */ = {isa = PBXFileReference; lastKnownFileType = text; name = x4.param; path = "realsr-ncnn-vulkan/models/models-DF2K/x4.param"; sourceTree = SOURCE_ROOT; };
 		CCC0DE1425819414000F4854 /* waifu2x-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "waifu2x-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCC0DE1725819414000F4854 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		CCC0DE1825819414000F4854 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -272,18 +306,6 @@
 		CCC0DE562581A52E000F4854 /* stb_image_write.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image_write.h; sourceTree = "<group>"; };
 		CCC0DE592581A52E000F4854 /* waifu2x.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waifu2x.h; sourceTree = "<group>"; };
 		CCC0DE5A2581A52F000F4854 /* waifu2x.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = waifu2x.cpp; sourceTree = "<group>"; };
-		CCC0DE5D2581A56A000F4854 /* waifu2x_postproc_fp16s.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_postproc_fp16s.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE5E2581A56A000F4854 /* waifu2x_preproc_tta_int8s.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_preproc_tta_int8s.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE5F2581A56A000F4854 /* waifu2x_preproc_tta.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_preproc_tta.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE602581A56A000F4854 /* waifu2x_preproc.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_preproc.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE612581A56A000F4854 /* waifu2x_postproc.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_postproc.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE622581A56A000F4854 /* waifu2x_postproc_tta_fp16s.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_postproc_tta_fp16s.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE632581A56A000F4854 /* waifu2x_postproc_int8s.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_postproc_int8s.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE642581A56A000F4854 /* waifu2x_postproc_tta_int8s.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_postproc_tta_int8s.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE652581A56B000F4854 /* waifu2x_postproc_tta.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_postproc_tta.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE662581A56B000F4854 /* waifu2x_preproc_int8s.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_preproc_int8s.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE672581A56B000F4854 /* waifu2x_preproc_fp16s.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_preproc_fp16s.spv.hex.h; sourceTree = "<group>"; };
-		CCC0DE682581A56B000F4854 /* waifu2x_preproc_tta_fp16s.spv.hex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waifu2x_preproc_tta_fp16s.spv.hex.h; sourceTree = "<group>"; };
 		CCF10BFC2581A79E004B242B /* waifu2xios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = waifu2xios.mm; sourceTree = "<group>"; };
 		CCF10C022581A79E004B242B /* waifu2xios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = waifu2xios.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -319,24 +341,11 @@
 		CC30D2502581B6A70032B3D9 /* waifu2x-ncnn-vulkan */ = {
 			isa = PBXGroup;
 			children = (
-				CCC0DE5D2581A56A000F4854 /* waifu2x_postproc_fp16s.spv.hex.h */,
-				CCC0DE632581A56A000F4854 /* waifu2x_postproc_int8s.spv.hex.h */,
-				CCC0DE622581A56A000F4854 /* waifu2x_postproc_tta_fp16s.spv.hex.h */,
-				CCC0DE642581A56A000F4854 /* waifu2x_postproc_tta_int8s.spv.hex.h */,
-				CCC0DE652581A56B000F4854 /* waifu2x_postproc_tta.spv.hex.h */,
-				CCC0DE612581A56A000F4854 /* waifu2x_postproc.spv.hex.h */,
-				CCC0DE672581A56B000F4854 /* waifu2x_preproc_fp16s.spv.hex.h */,
-				CCC0DE662581A56B000F4854 /* waifu2x_preproc_int8s.spv.hex.h */,
-				CCC0DE682581A56B000F4854 /* waifu2x_preproc_tta_fp16s.spv.hex.h */,
-				CCC0DE5E2581A56A000F4854 /* waifu2x_preproc_tta_int8s.spv.hex.h */,
-				CCC0DE5F2581A56A000F4854 /* waifu2x_preproc_tta.spv.hex.h */,
-				CCC0DE602581A56A000F4854 /* waifu2x_preproc.spv.hex.h */,
 				CCC0DE542581A52E000F4854 /* filesystem_utils.h */,
 				CCC0DE562581A52E000F4854 /* stb_image_write.h */,
 				CCC0DE552581A52E000F4854 /* stb_image.h */,
 				CCC0DE5A2581A52F000F4854 /* waifu2x.cpp */,
 				CCC0DE592581A52E000F4854 /* waifu2x.h */,
-				CC30D2512581B6BF0032B3D9 /* models */,
 			);
 			name = "waifu2x-ncnn-vulkan";
 			sourceTree = "<group>";
@@ -344,6 +353,8 @@
 		CC30D2512581B6BF0032B3D9 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				CC7BC571258285C7003F33A3 /* models-DF2K */,
+				CC7BC56C258285C7003F33A3 /* models-DF2K_JPEG */,
 				CC30D2522581B6BF0032B3D9 /* models-upconv_7_photo */,
 				CC30D25D2581B6BF0032B3D9 /* models-cunet */,
 				CC30D2702581B6BF0032B3D9 /* models-upconv_7_anime_style_art_rgb */,
@@ -419,6 +430,28 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		CC7BC56C258285C7003F33A3 /* models-DF2K_JPEG */ = {
+			isa = PBXGroup;
+			children = (
+				CC7BC56D258285C7003F33A3 /* x4.bin */,
+				CC7BC570258285C7003F33A3 /* x4.bin */,
+				CC7BC56F258285C7003F33A3 /* x4.param */,
+				CC7BC56E258285C7003F33A3 /* x4.param */,
+			);
+			path = "models-DF2K_JPEG";
+			sourceTree = "<group>";
+		};
+		CC7BC571258285C7003F33A3 /* models-DF2K */ = {
+			isa = PBXGroup;
+			children = (
+				CC7BC572258285C7003F33A3 /* x4.bin */,
+				CC7BC575258285C7003F33A3 /* x4.param */,
+				CC7BC574258285C7003F33A3 /* x4.bin */,
+				CC7BC573258285C7003F33A3 /* x4.param */,
+			);
+			path = "models-DF2K";
+			sourceTree = "<group>";
+		};
 		CCC0DE0B25819414000F4854 = {
 			isa = PBXGroup;
 			children = (
@@ -449,14 +482,15 @@
 				CCF10C022581A79E004B242B /* waifu2xios.h */,
 				CCF10BFC2581A79E004B242B /* waifu2xios.mm */,
 				CCC0DE2325819415000F4854 /* Assets.xcassets */,
-				CCC0DE2525819415000F4854 /* LaunchScreen.storyboard */,
+				CC30D2512581B6BF0032B3D9 /* models */,
 				CCC0DE512581A351000F4854 /* models */,
 				CC30D2412581B1B60032B3D9 /* VulkanSDK */,
 				CC30D2502581B6A70032B3D9 /* waifu2x-ncnn-vulkan */,
 				CCC0DE332581A27A000F4854 /* ncnn.xcodeproj */,
-				CCC0DE2825819415000F4854 /* Info.plist */,
 				CC30D2FE258246700032B3D9 /* SVProgressHUD.xcodeproj */,
 				CCC0DE2925819415000F4854 /* main.m */,
+				CCC0DE2525819415000F4854 /* LaunchScreen.storyboard */,
+				CCC0DE2825819415000F4854 /* Info.plist */,
 			);
 			path = "waifu2x-ios";
 			sourceTree = "<group>";
@@ -487,6 +521,8 @@
 				CC30D28E2581C4760032B3D9 /* CopyFiles */,
 				CC30D2DE2581D2E90032B3D9 /* CopyFiles */,
 				CC30D2EA2581D3120032B3D9 /* CopyFiles */,
+				CC7BC57625828752003F33A3 /* CopyFiles */,
+				CC7BC57B2582877C003F33A3 /* CopyFiles */,
 				CC30D313258247B60032B3D9 /* CopyFiles */,
 			);
 			buildRules = (
@@ -623,7 +659,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SRCROOT=`pwd`\nexport VULKAN_SDK=\"${SRCROOT}/VulkanSDK\"\nexport VULKAN_LIB=\"${VULKAN_SDK}/MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a\"\nif [ ! -e \"${VULKAN_LIB}\" ]; then\n    echo \"Please download and unarchive VulkanSDK to ${VULKAN_SDK}.\"\n    exit -1\nfi\n\necho \"[+] Recursive downloading dependences...\"\ngit submodule update --init --recursive\nif [ ! -d \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\" ]; then\n    mkdir -p \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\"\n    cd \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\"\n    cmake -GXcode -DCMAKE_BUILD_TYPE=Release \\\n        -DNCNN_BUILD_BENCHMARK=OFF \\\n        -DNCNN_BUILD_TESTS=OFF \\\n        -DNCNN_BUILD_TOOLS=OFF \\\n        -DNCNN_BUILD_EXAMPLES=OFF \\\n        -DCMAKE_TOOLCHAIN_FILE=\"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake\" \\\n        -DIOS_PLATFORM=OS64 \\\n        -DIOS_DEPLOYMENT_TARGET=11.0 \\\n        -DVulkan_LIBRARY=\"${VULKAN_LIB}\" \\\n        -DVulkan_INCLUDE_DIR=\"${VULKAN_SDK}/MoltenVK/include\" \\\n        -DNCNN_VULKAN=ON \\\n        ..\nfi\n\n# generate shader spv hex files\nif [ ! -d \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\" ]; then\n    cp -rf \"${SRCROOT}/waifu2x-ncnn-vulkan-shader-spv-hex\" \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\"\n    cd \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\"\n    mkdir -p build-shader && cd build-shader\n    VULKAN_SDK=\"${SRCROOT}/VulkanSDK/macOS\" cmake \\\n        -DVulkan_LIBRARY=\"${VULKAN_LIB}\" \\\n        -DVulkan_INCLUDE_DIR=\"${VULKAN_SDK}/MoltenVK/include\" \\\n        -DCMAKE_TOOLCHAIN_FILE=\"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake\" \\\n        -DIOS_PLATFORM=OS64 \\\n        -DIOS_DEPLOYMENT_TARGET=11.0 \\\n        ..\n    cmake --build .\n    cp -f *.h \"${SRCROOT}/waifu2x-ios\"\nfi\n";
+			shellScript = "export SRCROOT=`pwd`\nexport VULKAN_SDK=\"${SRCROOT}/VulkanSDK\"\nexport VULKAN_LIB=\"${VULKAN_SDK}/MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a\"\nif [ ! -e \"${VULKAN_LIB}\" ]; then\n    echo \"Please download and unarchive VulkanSDK to ${VULKAN_SDK}.\"\n    exit -1\nfi\n\necho \"[+] Recursive downloading dependences...\"\nif [ ! -d \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\" ]; then\n    cd \"${SRCROOT}/waifu2x-ncnn-vulkan\"\n    git submodule update --init --recursive\n    mkdir -p \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\"\n    cd \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\"\n    cmake -GXcode -DCMAKE_BUILD_TYPE=Release \\\n        -DNCNN_BUILD_BENCHMARK=OFF \\\n        -DNCNN_BUILD_TESTS=OFF \\\n        -DNCNN_BUILD_TOOLS=OFF \\\n        -DNCNN_BUILD_EXAMPLES=OFF \\\n        -DCMAKE_TOOLCHAIN_FILE=\"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake\" \\\n        -DIOS_PLATFORM=OS64 \\\n        -DIOS_DEPLOYMENT_TARGET=11.0 \\\n        -DVulkan_LIBRARY=\"${VULKAN_LIB}\" \\\n        -DVulkan_INCLUDE_DIR=\"${VULKAN_SDK}/MoltenVK/include\" \\\n        -DNCNN_VULKAN=ON \\\n        ..\nfi\n\n# waifu2x-ncnn-vulkan\n# generate shader spv hex files\nif [ ! -d \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\" ]; then\n    cp -rf \"${SRCROOT}/waifu2x-ncnn-vulkan-shader-spv-hex\" \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\"\n    cd \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\"\n    mkdir -p build-shader && cd build-shader\n    VULKAN_SDK=\"${SRCROOT}/VulkanSDK/macOS\" cmake \\\n        -DVulkan_LIBRARY=\"${VULKAN_LIB}\" \\\n        -DVulkan_INCLUDE_DIR=\"${VULKAN_SDK}/MoltenVK/include\" \\\n        -DCMAKE_TOOLCHAIN_FILE=\"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake\" \\\n        -DIOS_PLATFORM=OS64 \\\n        -DIOS_DEPLOYMENT_TARGET=11.0 \\\n        ..\n    cmake --build .\n    cp -f *.h \"${SRCROOT}/waifu2x-ios\"\nfi\n\ncd \"${SRCROOT}\"\ngit submodule update realsr-ncnn-vulkan \n# realsr-ncnn-vulkan\n# generate shader spv hex files\nif [ ! -d \"${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex\" ]; then\n    cp -rf \"${SRCROOT}/realsr-ncnn-vulkan-shader-spv-hex\" \"${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex\"\n    cd \"${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex\"\n    mkdir -p build-shader && cd build-shader\n    VULKAN_SDK=\"${SRCROOT}/VulkanSDK/macOS\" cmake \\\n        -DVulkan_LIBRARY=\"${VULKAN_LIB}\" \\\n        -DVulkan_INCLUDE_DIR=\"${VULKAN_SDK}/MoltenVK/include\" \\\n        -DCMAKE_TOOLCHAIN_FILE=\"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake\" \\\n        -DIOS_PLATFORM=OS64 \\\n        -DIOS_DEPLOYMENT_TARGET=11.0 \\\n        ..\n    cmake --build .\n    cp -f *.h \"${SRCROOT}/waifu2x-ios\"\nfi\n\nmkdir -p \"${SRCROOT}/waifu2x-ios/models\"\ncopy_models() {\n    if [ ! -d \"${SRCROOT}/waifu2x-ios/models/$1\" ]; then\n        cp -rf \"$2/$1\" \"${SRCROOT}/waifu2x-ios/models/$1\"\n    fi\n}\ncopy_models \"models-cunet\" \"${SRCROOT}/waifu2x-ncnn-vulkan/models\"\ncopy_models \"models-upconv_7_photo\" \"${SRCROOT}/waifu2x-ncnn-vulkan/models\"\ncopy_models \"models-upconv_7_anime_style_art_rgb\" \"${SRCROOT}/waifu2x-ncnn-vulkan/models\"\ncopy_models \"models-DF2K\" \"${SRCROOT}/realsr-ncnn-vulkan/models\"\ncopy_models \"models-DF2K_JPEG\" \"${SRCROOT}/realsr-ncnn-vulkan/models\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

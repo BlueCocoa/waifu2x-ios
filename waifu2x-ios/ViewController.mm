@@ -10,7 +10,7 @@
 #import "GPUInfo.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 
-@interface ViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
+@interface ViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource> {
     VkInstance gpuInstance;
 }
 @property (strong) NSArray<GPUInfo *> * gpus;
@@ -19,6 +19,11 @@
 @property (nullable, nonatomic) UIImagePickerController * imagePicker;
 @property (nullable, strong, atomic) NSArray<UIImage *>* images;
 @property (nullable, strong, atomic) UIImage * scaledImage;
+@property (strong, nonatomic) NSArray<NSString *> * modelNames;
+@property (strong, nonatomic) NSArray<NSString *> * modelDisplayNames;
+@property (strong) UITapGestureRecognizer * tapOnModelSelector;
+@property (nonatomic, nullable) UIPickerView * modelPicker;
+@property (atomic, assign) NSUInteger modelIndex;
 @end
 
 @implementation ViewController
@@ -29,11 +34,117 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.modelIndex = 0;
+    
+    self.modelNames = @[
+        @"models-cunet",
+        @"models-upconv_7_photo",
+        @"models-upconv_7_anime_style_art_rgb",
+        @"models-DF2K",
+        @"models-DF2K_JPEG"
+    ];
+    self.modelDisplayNames = @[
+        @"CUNet",
+        @"upconv7 photo",
+        @"upconv7 anime",
+        @"RealSR DF2K",
+        @"RealSR DF2K JPEG"
+    ];
     [self.imagePreview setContentMode:UIViewContentModeScaleAspectFit];
     [self.startButon setHidden:YES];
-    [self.modelSelect setSelectedSegmentIndex:2];
     [self.noiseSelect setSelectedSegmentIndex:2];
+    [self.scaleSelect setSelectedSegmentIndex:1];
+    [self.scaleSelect setEnabled:NO forSegmentAtIndex:0];
     [self createGPUInstance];
+    
+    [self.modelSelector setEnabled:YES];
+    [self.modelSelector setText:self.modelDisplayNames[self.modelIndex]];
+
+    self.tapOnModelSelector = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectModel)];
+    [self.modelSelector addGestureRecognizer:self.tapOnModelSelector];
+}
+
+- (void)selectModel {
+    UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"Select Model" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alert setModalInPopover:YES];
+    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [alert dismissViewControllerAnimated:YES completion:^{
+            self.modelIndex = [self.modelPicker selectedRowInComponent:0];
+            if (self.modelIndex >= self.modelDisplayNames.count) {
+                self.modelIndex = 0;
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.modelSelector setText:self.modelDisplayNames[self.modelIndex]];
+                if ([self.modelDisplayNames[self.modelIndex] hasPrefix:@"RealSR"]) {
+                    [self.noiseSelect setSelectedSegmentIndex:0];
+                    [self.noiseSelect setEnabled:YES forSegmentAtIndex:1];
+                    [self.noiseSelect setEnabled:NO forSegmentAtIndex:1];
+                    [self.noiseSelect setEnabled:NO forSegmentAtIndex:2];
+                    [self.scaleSelect setSelectedSegmentIndex:0];
+                    [self.scaleSelect setEnabled:YES forSegmentAtIndex:0];
+                    [self.scaleSelect setEnabled:NO forSegmentAtIndex:1];
+                    [self.scaleSelect setEnabled:NO forSegmentAtIndex:2];
+                } else {
+                    if (self.scaleSelect.selectedSegmentIndex == 0) {
+                        [self.scaleSelect setSelectedSegmentIndex:1];
+                    }
+                    [self.noiseSelect setEnabled:YES forSegmentAtIndex:1];
+                    [self.noiseSelect setEnabled:YES forSegmentAtIndex:2];
+                    [self.scaleSelect setEnabled:YES forSegmentAtIndex:1];
+                    [self.scaleSelect setEnabled:YES forSegmentAtIndex:2];
+                    [self.scaleSelect setEnabled:NO forSegmentAtIndex:0];
+                }
+            });
+        }];
+    }]];
+    CGRect containerFrame = CGRectMake(10, 70, 280, 140);
+    self.modelPicker = [[UIPickerView alloc] initWithFrame:containerFrame];
+    [alert.view addSubview:self.modelPicker];
+    [self.modelPicker setDelegate:self];
+    [self.modelPicker setDataSource:self];
+    
+    NSLayoutConstraint * cons1 = [NSLayoutConstraint constraintWithItem:alert.view attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:self.modelPicker attribute:NSLayoutAttributeHeight multiplier:1.0 constant:150.0];
+    NSLayoutConstraint * cons2 = [NSLayoutConstraint constraintWithItem:alert.view attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:self.modelPicker attribute:NSLayoutAttributeWidth multiplier:1.0 constant:20.0];
+    [alert.view addConstraints:@[cons1, cons2]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark - UIPickerViewDelegate
+
+- (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    if (pickerView == self.modelPicker) {
+        return self.modelDisplayNames[row];
+    }
+    return nil;
+}
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
+    if (pickerView == self.modelPicker) {
+        if (component == 0) {
+            return 35.0f;
+        }
+    }
+    return 0.0;
+}
+
+#pragma mark - UIPickerViewDataSource
+
+// returns the number of 'columns' to display.
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    if (pickerView == self.modelPicker) {
+        return 1;
+    }
+    return 0;
+}
+
+// returns the # of rows in each component..
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    if (pickerView == self.modelPicker) {
+        if (component == 0) {
+            return self.modelDisplayNames.count;
+        }
+    }
+    return 0;
 }
 
 - (BOOL)createGPUInstance {
@@ -216,11 +327,11 @@
     if (self.images.count != 1) {
         return;
     }
-    NSString * model = [@[@"models-cunet", @"models-upconv_7_anime_style_art_rgb", @"models-upconv_7_photo"] objectAtIndex:[self.modelSelect selectedSegmentIndex]];
+    NSString * model = self.modelNames[MIN(self.modelIndex, self.modelNames.count)];
     int noise = [(NSNumber *)[@[@(0), @(1), @(2)] objectAtIndex:[self.noiseSelect selectedSegmentIndex]] intValue];
-    int scale = [(NSNumber *)[@[@(2), @(1)] objectAtIndex:[self.scaleSelect selectedSegmentIndex]] intValue];
+    int scale = [(NSNumber *)[@[@(4), @(2), @(1)] objectAtIndex:[self.scaleSelect selectedSegmentIndex]] intValue];
     BOOL enableTTAMode = [self.ttaSelect selectedSegmentIndex] == 0;
-    int tilesize = [(NSNumber *)[@[@(400), @(200), @(100)] objectAtIndex:[self.tilesizeSelete selectedSegmentIndex]] intValue];
+    int tilesize = [(NSNumber *)[@[@(400), @(200), @(100), @(64), @(32)] objectAtIndex:[self.tilesizeSelete selectedSegmentIndex]] intValue];
     
     [self.startButon setTitle:@"Processing..." forState:UIControlStateNormal];
     [self.startButon setEnabled:NO];

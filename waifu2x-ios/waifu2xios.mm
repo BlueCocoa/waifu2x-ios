@@ -546,7 +546,7 @@ void* save(void* args)
                     if (percentage > 0) {
                         NSTimeInterval current = [[NSDate date] timeIntervalSince1970];
                         double estimated = (current - start_time) / percentage * (100.f - percentage);
-                        msg = [msg stringByAppendingFormat:@"\nEsimated left time: %.0lfs", estimated   ];
+                        msg = [msg stringByAppendingFormat:@"\nEstimated left time: %.0lfs", estimated   ];
                     }
                     cb(percentage, 100, msg);
                 }

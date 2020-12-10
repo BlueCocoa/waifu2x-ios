@@ -1,4 +1,6 @@
 .DS_Store
 waifu2x-ios.xcodeproj/xcuserdata/**
 VulkanSDK/*
+waifu2x-ios/models/**
+waifu2x-ios/*hex.h
 

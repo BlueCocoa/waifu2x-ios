@@ -1,0 +1,6 @@
+[submodule "SVProgressHUD"]
+	path = SVProgressHUD
+	url = https://github.com/SVProgressHUD/SVProgressHUD.git
+[submodule "waifu2x-ncnn-vulkan"]
+	path = waifu2x-ncnn-vulkan
+	url = https://github.com/nihui/waifu2x-ncnn-vulkan

@@ -17,7 +17,7 @@
 @property (nonatomic) uint32_t currentGPUID;
 @property (strong, nonatomic) NSTimer * vramStaticticsTimer;
 @property (nullable, nonatomic) UIImagePickerController * imagePicker;
-@property (nullable, strong, atomic) NSArray<UIImage *>* images;
+@property (nullable, strong, atomic) NSMutableArray<UIImage *>* images;
 @property (nullable, strong, atomic) UIImage * scaledImage;
 @property (strong, nonatomic) NSArray<NSString *> * modelNames;
 @property (strong, nonatomic) NSArray<NSString *> * modelDisplayNames;
@@ -35,6 +35,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.modelIndex = 0;
+    self.images = [NSMutableArray new];
     
     self.modelNames = @[
         @"models-cunet",
@@ -294,16 +295,17 @@
 #else
         [self.imagePicker setMediaTypes:@[@"public.image"]];
 #endif
-        [self presentViewController:self.imagePicker animated:YES completion:^{
-            [self.startButon setHidden:NO];
-        }];
+        [self presentViewController:self.imagePicker animated:YES completion:nil];
     });
 }
 
 - (void)didWriteImage:(UIImage*)img toSavedPhotosAlbumIfError:(NSError *)e contextInfo:(void*)ctx {
     [self.startButon setTitle:@"Start" forState:UIControlStateNormal];
     [self.startButon setEnabled:YES];
+    [self.startButon setHidden:YES];
     self.startButon.tag = 0;
+    
+    [self.images removeAllObjects];
     
     UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"Succeeded" message:@"New image has been successfully saved" preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -311,6 +313,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.imagePreview setImage:nil];
                 self.scaledImage = nil;
+                
             });
         }];
     }]];
@@ -404,9 +407,11 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
     [self.imagePicker dismissViewControllerAnimated:YES completion:^{
-        self.images = @[(UIImage *)[info valueForKey:UIImagePickerControllerOriginalImage]];
+        [self.images removeAllObjects];
+        [self.images addObject:(UIImage *)[info valueForKey:UIImagePickerControllerOriginalImage]];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.imagePreview setImage:self.images[0]];
+            [self.startButon setHidden:NO];
         });
     }];
 }

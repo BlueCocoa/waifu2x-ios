@@ -39,11 +39,15 @@ The run script is baked in Xcode project, basically, it does these work for you.
 export VULKAN_SDK="${SRCROOT}/VulkanSDK"
 export VULKAN_LIB="${VULKAN_SDK}/MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a"
 
-# init dependencies
-git submodule update --init --recursive
+if [ ! -e "${VULKAN_LIB}" ]; then
+    echo "Please download and unarchive VulkanSDK to ${VULKAN_SDK}."
+    exit -1
+fi
 
-# SRCROOT is the root directory of this repo
+echo "[+] Recursive downloading dependences..."
 if [ ! -d "${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple" ]; then
+    cd "${SRCROOT}/waifu2x-ncnn-vulkan"
+    git submodule update --init --recursive
     mkdir -p "${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple"
     cd "${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple"
     cmake -GXcode -DCMAKE_BUILD_TYPE=Release \
@@ -60,6 +64,7 @@ if [ ! -d "${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple" ]; then
         ..
 fi
 
+# waifu2x-ncnn-vulkan
 # generate shader spv hex files
 if [ ! -d "${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex" ]; then
     cp -rf "${SRCROOT}/waifu2x-ncnn-vulkan-shader-spv-hex" "${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex"
@@ -75,16 +80,48 @@ if [ ! -d "${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex" ]; then
     cmake --build .
     cp -f *.h "${SRCROOT}/waifu2x-ios"
 fi
+
+cd "${SRCROOT}"
+git submodule update realsr-ncnn-vulkan 
+# realsr-ncnn-vulkan
+# generate shader spv hex files
+if [ ! -d "${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex" ]; then
+    cp -rf "${SRCROOT}/realsr-ncnn-vulkan-shader-spv-hex" "${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex"
+    cd "${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex"
+    mkdir -p build-shader && cd build-shader
+    VULKAN_SDK="${SRCROOT}/VulkanSDK/macOS" cmake \
+        -DVulkan_LIBRARY="${VULKAN_LIB}" \
+        -DVulkan_INCLUDE_DIR="${VULKAN_SDK}/MoltenVK/include" \
+        -DCMAKE_TOOLCHAIN_FILE="${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake" \
+        -DIOS_PLATFORM=OS64 \
+        -DIOS_DEPLOYMENT_TARGET=11.0 \
+        ..
+    cmake --build .
+    cp -f *.h "${SRCROOT}/waifu2x-ios"
+fi
+
+mkdir -p "${SRCROOT}/waifu2x-ios/models"
+copy_models() {
+    if [ ! -d "${SRCROOT}/waifu2x-ios/models/$1" ]; then
+        cp -rf "$2/$1" "${SRCROOT}/waifu2x-ios/models/$1"
+    fi
+}
+copy_models "models-cunet" "${SRCROOT}/waifu2x-ncnn-vulkan/models"
+copy_models "models-upconv_7_photo" "${SRCROOT}/waifu2x-ncnn-vulkan/models"
+copy_models "models-upconv_7_anime_style_art_rgb" "${SRCROOT}/waifu2x-ncnn-vulkan/models"
+copy_models "models-DF2K" "${SRCROOT}/realsr-ncnn-vulkan/models"
+copy_models "models-DF2K_JPEG" "${SRCROOT}/realsr-ncnn-vulkan/models"
 ```
+
+## Notice
+RealSR can take a significant amount of time, the estimated time may not be accurate as the device may be throttled by thermal conditions. Also, at the time of writing, the largest selectable `tilesize` for RealSR on iPhone 11 Pro Max is 100.
 
 ## Acknowledgement
 
 1. SVProgressHUD - https://github.com/SVProgressHUD/SVProgressHUD
 2. waifu2x-ncnn-vulkan - https://github.com/nihui/waifu2x-ncnn-vulkan
+2. realsr-ncnn-vulkan - https://github.com/nihui/realsr-ncnn-vulkan
 3. libwebp - https://github.com/webmproject/libwebp.git
 4. ncnn - https://github.com/Tencent/ncnn
 5. glslang - https://github.com/KhronosGroup/glslang
 6. Icon - https://www.flaticon.com/free-icon/zoom-in_3670592
-
-
-

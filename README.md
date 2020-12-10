@@ -59,6 +59,22 @@ if [ ! -d "${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple" ]; then
         -DNCNN_VULKAN=ON \
         ..
 fi
+
+# generate shader spv hex files
+if [ ! -d "${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex" ]; then
+cp -rf "${SRCROOT}/waifu2x-ncnn-vulkan-shader-spv-hex" "${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex"
+cd "${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex"
+mkdir -p build-shader && cd build-shader
+VULKAN_SDK="${SRCROOT}/VulkanSDK/macOS" cmake \
+-DVulkan_LIBRARY="${VULKAN_LIB}" \
+-DVulkan_INCLUDE_DIR="${VULKAN_SDK}/MoltenVK/include" \
+-DCMAKE_TOOLCHAIN_FILE="${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake" \
+-DIOS_PLATFORM=OS64 \
+-DIOS_DEPLOYMENT_TARGET=11.0 \
+..
+cmake --build .
+cp -f *.h "${SRCROOT}/waifu2x-ios"
+fi
 ```
 
 ## Acknowledgement

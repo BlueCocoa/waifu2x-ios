@@ -545,8 +545,8 @@ void* save(void* args)
                     NSString * msg = [NSString stringWithFormat:@"Waifu2x processing...%0.2f%%", percentage];
                     if (percentage > 0) {
                         NSTimeInterval current = [[NSDate date] timeIntervalSince1970];
-                        double estimated = (current - start_time) / percentage * 100.f;
-                        msg = [msg stringByAppendingFormat:@"\nEsimated left time: %.0lfs", estimated];
+                        double estimated = (current - start_time) / percentage * (100.f - percentage);
+                        msg = [msg stringByAppendingFormat:@"\nEsimated left time: %.0lfs", estimated   ];
                     }
                     cb(percentage, 100, msg);
                 }

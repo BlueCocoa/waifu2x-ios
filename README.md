@@ -17,7 +17,7 @@ Free and easy to use waifu2x application on iOS.
 git clone https://github.com/BlueCocoa/waifu2x-ios
 cd waifu2x-ios && export SRCROOT=`pwd`
 
-# download and unarchive Vuklan SDK for macOS to waifu2x-ios/Vulkan_SDK
+# download and unarchive Vuklan SDK for macOS to ${SRCROOT}/Vulkan_SDK
 # at the time of writing, latest SDK is https://vulkan.lunarg.com/sdk/home#sdk/downloadConfirm/1.2.154.0/mac/vulkansdk-macos-1.2.154.0.dmg
 https://vulkan.lunarg.com/sdk/home#mac
 ```

@@ -12,6 +12,9 @@ Free and easy to use waifu2x application on iOS.
 
 ![screenshot 4](4.png)
 
+### TODO
+- [ ] Video support? (but seriously, would anyone really do this on iPhone / iPad? It's gonna be thermal throttled a lot)
+
 ### Compile
 
 ```bash

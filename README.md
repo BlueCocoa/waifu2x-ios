@@ -2,6 +2,8 @@
 
 Free and easy to use waifu2x application on iOS.
 
+
+This software is only free and open to users who believe in free speech, stand with Hong Kong. Anyone believes in CCP or supports CCP in any forms is NOT allowed to use this software. 
 ## Screenshot
 
 ![screenshot 1](1.png)

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		CC30D2172581ACB00032B3D9 /* GPUInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC30D2162581ACB00032B3D9 /* GPUInfo.mm */; };
 		CC30D23B2581B17C0032B3D9 /* libglslang.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC30D2152581ACB00032B3D9 /* libglslang.a */; };
-		CC30D23C2581B17C0032B3D9 /* libncnn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCC0DE3F2581A27A000F4854 /* libncnn.a */; };
+		CC30D23C2581B17C0032B3D9 /* libncnnd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCC0DE3F2581A27A000F4854 /* libncnnd.a */; };
 		CC30D23D2581B17C0032B3D9 /* libOGLCompiler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC30D20F2581ACB00032B3D9 /* libOGLCompiler.a */; };
 		CC30D23E2581B17C0032B3D9 /* libOSDependent.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC30D2112581ACB00032B3D9 /* libOSDependent.a */; };
 		CC30D23F2581B17C0032B3D9 /* libSPIRV.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC30D2132581ACB00032B3D9 /* libSPIRV.a */; };
@@ -54,6 +54,8 @@
 		CC30D2FC2581D3260032B3D9 /* noise3_model.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC30D26F2581B6BF0032B3D9 /* noise3_model.bin */; };
 		CC30D310258247A50032B3D9 /* SVProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC30D304258246700032B3D9 /* SVProgressHUD.framework */; };
 		CC30D314258247BE0032B3D9 /* SVProgressHUD.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC30D304258246700032B3D9 /* SVProgressHUD.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CC44D7E02598E55A00FD582D /* vkPeakBenchmarkViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC44D7DF2598E55A00FD582D /* vkPeakBenchmarkViewController.mm */; };
+		CC44D81B2598F08100FD582D /* generate-ncnn.sh in Resources */ = {isa = PBXBuildFile; fileRef = CC44D81A2598F08100FD582D /* generate-ncnn.sh */; };
 		CC7BC57825828765003F33A3 /* x4.param in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC7BC575258285C7003F33A3 /* x4.param */; };
 		CC7BC57925828765003F33A3 /* x4.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC7BC574258285C7003F33A3 /* x4.bin */; };
 		CC7BC57D2582878F003F33A3 /* x4.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC7BC570258285C7003F33A3 /* x4.bin */; };
@@ -102,7 +104,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = CCC0DE332581A27A000F4854 /* ncnn.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = B5850DC3B36F4F18B119C2E7;
+			remoteGlobalIDString = F7928FCDCBDB48C7A32EB4D5;
 			remoteInfo = ALL_BUILD;
 		};
 		CC30D303258246700032B3D9 /* PBXContainerItemProxy */ = {
@@ -125,6 +127,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 4A9D7DD71AB345980039B273;
 			remoteInfo = "SVProgressHUD-Framework";
+		};
+		CC44D81C2598F0AA00FD582D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCC0DE0C25819414000F4854 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC44D80D2598F02800FD582D;
+			remoteInfo = "generate-ncnn";
 		};
 		CCC0DE3E2581A27A000F4854 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -281,6 +290,9 @@
 		CC30D27C2581BBC60032B3D9 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		CC30D27D2581BBC60032B3D9 /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
 		CC30D2FE258246700032B3D9 /* SVProgressHUD.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SVProgressHUD.xcodeproj; path = SVProgressHUD/SVProgressHUD.xcodeproj; sourceTree = SOURCE_ROOT; };
+		CC44D7DE2598E55A00FD582D /* vkPeakBenchmarkViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vkPeakBenchmarkViewController.h; sourceTree = "<group>"; };
+		CC44D7DF2598E55A00FD582D /* vkPeakBenchmarkViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = vkPeakBenchmarkViewController.mm; sourceTree = "<group>"; };
+		CC44D81A2598F08100FD582D /* generate-ncnn.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "generate-ncnn.sh"; sourceTree = "<group>"; };
 		CC7BC56D258285C7003F33A3 /* x4.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = x4.bin; sourceTree = "<group>"; };
 		CC7BC56E258285C7003F33A3 /* x4.param */ = {isa = PBXFileReference; lastKnownFileType = text; path = x4.param; sourceTree = "<group>"; };
 		CC7BC56F258285C7003F33A3 /* x4.param */ = {isa = PBXFileReference; lastKnownFileType = text; name = x4.param; path = "realsr-ncnn-vulkan/models/models-DF2K_JPEG/x4.param"; sourceTree = SOURCE_ROOT; };
@@ -317,7 +329,7 @@
 			files = (
 				CC30D310258247A50032B3D9 /* SVProgressHUD.framework in Frameworks */,
 				CC30D23B2581B17C0032B3D9 /* libglslang.a in Frameworks */,
-				CC30D23C2581B17C0032B3D9 /* libncnn.a in Frameworks */,
+				CC30D23C2581B17C0032B3D9 /* libncnnd.a in Frameworks */,
 				CC30D23D2581B17C0032B3D9 /* libOGLCompiler.a in Frameworks */,
 				CC30D23E2581B17C0032B3D9 /* libOSDependent.a in Frameworks */,
 				CC30D2432581B1C60032B3D9 /* MoltenVK.xcframework in Frameworks */,
@@ -455,6 +467,7 @@
 		CCC0DE0B25819414000F4854 = {
 			isa = PBXGroup;
 			children = (
+				CC44D81A2598F08100FD582D /* generate-ncnn.sh */,
 				CCC0DE1625819414000F4854 /* waifu2x-ios */,
 				CCC0DE1525819414000F4854 /* Products */,
 				CC30D23A2581B17C0032B3D9 /* Frameworks */,
@@ -476,6 +489,8 @@
 				CCC0DE1825819414000F4854 /* AppDelegate.m */,
 				CCC0DE1D25819414000F4854 /* ViewController.h */,
 				CCC0DE1E25819414000F4854 /* ViewController.mm */,
+				CC44D7DE2598E55A00FD582D /* vkPeakBenchmarkViewController.h */,
+				CC44D7DF2598E55A00FD582D /* vkPeakBenchmarkViewController.mm */,
 				CCC0DE2025819414000F4854 /* Main.storyboard */,
 				CC30D2052581ACB00032B3D9 /* GPUInfo.h */,
 				CC30D2162581ACB00032B3D9 /* GPUInfo.mm */,
@@ -502,19 +517,35 @@
 				CC30D2112581ACB00032B3D9 /* libOSDependent.a */,
 				CC30D2132581ACB00032B3D9 /* libSPIRV.a */,
 				CC30D2152581ACB00032B3D9 /* libglslang.a */,
-				CCC0DE3F2581A27A000F4854 /* libncnn.a */,
+				CCC0DE3F2581A27A000F4854 /* libncnnd.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
+/* Begin PBXLegacyTarget section */
+		CC44D80D2598F02800FD582D /* generate-ncnn */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "${SRCROOT}/generate-ncnn.sh";
+			buildConfigurationList = CC44D80E2598F02800FD582D /* Build configuration list for PBXLegacyTarget "generate-ncnn" */;
+			buildPhases = (
+			);
+			buildToolPath = /bin/sh;
+			buildWorkingDirectory = "${SRCROOT}";
+			dependencies = (
+			);
+			name = "generate-ncnn";
+			passBuildSettingsInEnvironment = 1;
+			productName = "generate-ncnn";
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		CCC0DE1325819414000F4854 /* waifu2x-ios */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCC0DE2D25819415000F4854 /* Build configuration list for PBXNativeTarget "waifu2x-ios" */;
 			buildPhases = (
-				CCC4EED925825564001D617F /* ShellScript */,
 				CCC0DE1025819414000F4854 /* Sources */,
 				CCC0DE1125819414000F4854 /* Frameworks */,
 				CCC0DE1225819414000F4854 /* Resources */,
@@ -528,6 +559,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CC44D81D2598F0AA00FD582D /* PBXTargetDependency */,
 				CC30D312258247AD0032B3D9 /* PBXTargetDependency */,
 				CC30D2342581AF030032B3D9 /* PBXTargetDependency */,
 			);
@@ -544,6 +576,9 @@
 			attributes = {
 				LastUpgradeCheck = 1220;
 				TargetAttributes = {
+					CC44D80D2598F02800FD582D = {
+						CreatedOnToolsVersion = 12.2;
+					};
 					CCC0DE1325819414000F4854 = {
 						CreatedOnToolsVersion = 12.2;
 					};
@@ -573,6 +608,7 @@
 			projectRoot = "";
 			targets = (
 				CCC0DE1325819414000F4854 /* waifu2x-ios */,
+				CC44D80D2598F02800FD582D /* generate-ncnn */,
 			);
 		};
 /* End PBXProject section */
@@ -620,10 +656,10 @@
 			remoteRef = CC30D305258246700032B3D9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		CCC0DE3F2581A27A000F4854 /* libncnn.a */ = {
+		CCC0DE3F2581A27A000F4854 /* libncnnd.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libncnn.a;
+			path = libncnnd.a;
 			remoteRef = CCC0DE3E2581A27A000F4854 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -638,30 +674,11 @@
 				CCC0DE2425819415000F4854 /* Assets.xcassets in Resources */,
 				CCC0DE522581A351000F4854 /* models in Resources */,
 				CCC0DE2225819414000F4854 /* Main.storyboard in Resources */,
+				CC44D81B2598F08100FD582D /* generate-ncnn.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		CCC4EED925825564001D617F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export VULKAN_SDK=\"${SRCROOT}/VulkanSDK\"\nexport VULKAN_LIB=\"${VULKAN_SDK}/MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a\"\nif [ ! -e \"${VULKAN_LIB}\" ]; then\n    echo \"Please download and unarchive VulkanSDK to ${VULKAN_SDK}.\"\n    exit -1\nfi\n\necho \"[+] Recursive downloading dependences...\"\nif [ ! -d \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\" ]; then\n    cd \"${SRCROOT}/waifu2x-ncnn-vulkan\"\n    git submodule update --init --recursive\n    mkdir -p \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\"\n    cd \"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/build-apple\"\n    cmake -GXcode -DCMAKE_BUILD_TYPE=Release \\\n        -DNCNN_BUILD_BENCHMARK=OFF \\\n        -DNCNN_BUILD_TESTS=OFF \\\n        -DNCNN_BUILD_TOOLS=OFF \\\n        -DNCNN_BUILD_EXAMPLES=OFF \\\n        -DCMAKE_TOOLCHAIN_FILE=\"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake\" \\\n        -DIOS_PLATFORM=OS64 \\\n        -DIOS_DEPLOYMENT_TARGET=11.0 \\\n        -DVulkan_LIBRARY=\"${VULKAN_LIB}\" \\\n        -DVulkan_INCLUDE_DIR=\"${VULKAN_SDK}/MoltenVK/include\" \\\n        -DNCNN_VULKAN=ON \\\n        ..\nfi\n\n# waifu2x-ncnn-vulkan\n# generate shader spv hex files\nif [ ! -d \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\" ]; then\n    cp -rf \"${SRCROOT}/waifu2x-ncnn-vulkan-shader-spv-hex\" \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\"\n    cd \"${SRCROOT}/waifu2x-ncnn-vulkan/src/gen-shader-spv-hex\"\n    mkdir -p build-shader && cd build-shader\n    VULKAN_SDK=\"${SRCROOT}/VulkanSDK/macOS\" cmake \\\n        -DVulkan_LIBRARY=\"${VULKAN_LIB}\" \\\n        -DVulkan_INCLUDE_DIR=\"${VULKAN_SDK}/MoltenVK/include\" \\\n        -DCMAKE_TOOLCHAIN_FILE=\"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake\" \\\n        -DIOS_PLATFORM=OS64 \\\n        -DIOS_DEPLOYMENT_TARGET=11.0 \\\n        ..\n    cmake --build .\n    cp -f *.h \"${SRCROOT}/waifu2x-ios\"\nfi\n\ncd \"${SRCROOT}\"\ngit submodule update realsr-ncnn-vulkan \n# realsr-ncnn-vulkan\n# generate shader spv hex files\nif [ ! -d \"${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex\" ]; then\n    cp -rf \"${SRCROOT}/realsr-ncnn-vulkan-shader-spv-hex\" \"${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex\"\n    cd \"${SRCROOT}/realsr-ncnn-vulkan/src/gen-shader-spv-hex\"\n    mkdir -p build-shader && cd build-shader\n    VULKAN_SDK=\"${SRCROOT}/VulkanSDK/macOS\" cmake \\\n        -DVulkan_LIBRARY=\"${VULKAN_LIB}\" \\\n        -DVulkan_INCLUDE_DIR=\"${VULKAN_SDK}/MoltenVK/include\" \\\n        -DCMAKE_TOOLCHAIN_FILE=\"${SRCROOT}/waifu2x-ncnn-vulkan/src/ncnn/toolchains/ios.toolchain.cmake\" \\\n        -DIOS_PLATFORM=OS64 \\\n        -DIOS_DEPLOYMENT_TARGET=11.0 \\\n        ..\n    cmake --build .\n    cp -f *.h \"${SRCROOT}/waifu2x-ios\"\nfi\n\nmkdir -p \"${SRCROOT}/waifu2x-ios/models\"\ncopy_models() {\n    if [ ! -d \"${SRCROOT}/waifu2x-ios/models/$1\" ]; then\n        cp -rf \"$2/$1\" \"${SRCROOT}/waifu2x-ios/models/$1\"\n    fi\n}\ncopy_models \"models-cunet\" \"${SRCROOT}/waifu2x-ncnn-vulkan/models\"\ncopy_models \"models-upconv_7_photo\" \"${SRCROOT}/waifu2x-ncnn-vulkan/models\"\ncopy_models \"models-upconv_7_anime_style_art_rgb\" \"${SRCROOT}/waifu2x-ncnn-vulkan/models\"\ncopy_models \"models-DF2K\" \"${SRCROOT}/realsr-ncnn-vulkan/models\"\ncopy_models \"models-DF2K_JPEG\" \"${SRCROOT}/realsr-ncnn-vulkan/models\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CCC0DE1025819414000F4854 /* Sources */ = {
@@ -674,6 +691,7 @@
 				CCC0DE1925819414000F4854 /* AppDelegate.m in Sources */,
 				CCC0DE2A25819415000F4854 /* main.m in Sources */,
 				CCC0DE5B2581A52F000F4854 /* waifu2x.cpp in Sources */,
+				CC44D7E02598E55A00FD582D /* vkPeakBenchmarkViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -689,6 +707,11 @@
 			isa = PBXTargetDependency;
 			name = "SVProgressHUD-Framework";
 			targetProxy = CC30D311258247AD0032B3D9 /* PBXContainerItemProxy */;
+		};
+		CC44D81D2598F0AA00FD582D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC44D80D2598F02800FD582D /* generate-ncnn */;
+			targetProxy = CC44D81C2598F0AA00FD582D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -712,6 +735,33 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		CC44D80F2598F02800FD582D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 0000000000;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		CC44D8102598F02800FD582D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 0000000000;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		CCC0DE2B25819415000F4854 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -877,6 +927,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CC44D80E2598F02800FD582D /* Build configuration list for PBXLegacyTarget "generate-ncnn" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC44D80F2598F02800FD582D /* Debug */,
+				CC44D8102598F02800FD582D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CCC0DE0F25819414000F4854 /* Build configuration list for PBXProject "waifu2x-ios" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

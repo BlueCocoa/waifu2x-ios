@@ -13,7 +13,7 @@
 - (IBAction)startStop:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UITextField *modelSelector;
-@property (weak, nonatomic) IBOutlet UILabel *GPUNameLabel;
+@property (strong, nonatomic) IBOutlet UILabel *GPUNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *VRAMUsageLabel;
 @property (weak, nonatomic) IBOutlet UIProgressView *VRAMUsageBar;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *noiseSelect;

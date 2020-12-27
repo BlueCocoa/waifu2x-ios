@@ -8,6 +8,7 @@
 #import "ViewController.h"
 #import "waifu2xios.h"
 #import "GPUInfo.h"
+#import "vkPeakBenchmarkViewController.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 
 @interface ViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource> {
@@ -22,8 +23,10 @@
 @property (strong, nonatomic) NSArray<NSString *> * modelNames;
 @property (strong, nonatomic) NSArray<NSString *> * modelDisplayNames;
 @property (strong) UITapGestureRecognizer * tapOnModelSelector;
+@property (strong) UITapGestureRecognizer * tapOnGPUNameLabel;
 @property (nonatomic, nullable) UIPickerView * modelPicker;
 @property (atomic, assign) NSUInteger modelIndex;
+@property (strong, nullable) vkPeakBenchmarkViewController * peak;
 @end
 
 @implementation ViewController
@@ -63,6 +66,10 @@
 
     self.tapOnModelSelector = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectModel)];
     [self.modelSelector addGestureRecognizer:self.tapOnModelSelector];
+    
+    self.tapOnGPUNameLabel = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showBenchmark)];
+    [self.GPUNameLabel addGestureRecognizer:self.tapOnGPUNameLabel];
+    [self.GPUNameLabel setUserInteractionEnabled:YES];
 }
 
 - (void)selectModel {
@@ -108,6 +115,15 @@
     NSLayoutConstraint * cons2 = [NSLayoutConstraint constraintWithItem:alert.view attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:self.modelPicker attribute:NSLayoutAttributeWidth multiplier:1.0 constant:20.0];
     [alert.view addConstraints:@[cons1, cons2]];
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)showBenchmark {
+    if (self.peak == nil) {
+        self.peak = [self.storyboard instantiateViewControllerWithIdentifier:@"vkPeakBenchmark"];
+    }
+    [self presentViewController:self.peak animated:YES completion:^{
+        [self.peak setGPUName:self.GPUNameLabel.text];
+    }];
 }
 
 #pragma mark - UIPickerViewDelegate
